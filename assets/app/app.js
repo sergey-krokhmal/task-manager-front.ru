@@ -12,6 +12,11 @@ var taskApp = angular.module('taskManagerApp', [])
                 'Content-Type': 'application/json'
             }
         }
+        
+        taskList.sortBy = function(task1, task2) {
+            return (task1.priority > task2.priority) ? -1 : 1;
+        };
+        
         $http(req).then(function (response){
             taskList.tasks = response.data;
             taskList.sortTasks();
@@ -35,7 +40,7 @@ var taskApp = angular.module('taskManagerApp', [])
         
         taskList.sortTasks = function() {
             taskList.showTags.fill(false);
-            taskList.tasks = orderBy(taskList.tasks, 'priority', true);
+            taskList.tasks = orderBy(taskList.tasks, ['priority', '-status'], true);
         }
         
         taskList.changePriority = function(task, priority) {
