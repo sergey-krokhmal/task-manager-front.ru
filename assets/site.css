@@ -46,6 +46,10 @@ body {
     margin-top: 4px;
 }
 
+.done-task {
+    background-color: #618188;
+}
+
 .task-part {
     height: 48px;
 }

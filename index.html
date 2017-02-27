@@ -35,7 +35,8 @@
                 <div class="col-sm-8 col-sm-offset-2" ng-controller="TaskListController as taskList">
                     <div class="row">
                         <div class="col-sm-12 bg-info tasks-remain">
-                            Осталось {{taskList.remaining()}} из {{taskList.tasks.length}}
+                            <span ng-show="taskList.remaining() > 0">Осталось {{taskList.remaining()}} из {{taskList.tasks.length}}</span>
+                            <span ng-show="taskList.remaining() == 0" class="text-success">Все задачи выполнены!</span>
                         </div>
                     </div>
                     <ul class="row unstyled">
@@ -43,7 +44,7 @@
                             <!--input type="checkbox" ng-model="task.status" ng-false-value="1" ng-true-value="2"-->
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <div class="row base-bg">
+                                    <div class="row base-bg"  ng-class="{'done-task': (task.status == 2)}">
                                         <div class="col-sm-1 task-part task-left-side">
                                             <input class="task-status" type="checkbox" ng-model="task.status" ng-change="taskList.changeStatus(task)" ng-false-value="'1'" ng-true-value="'2'">
                                         </div>
@@ -77,17 +78,19 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-8">
-                                                    <div class="input-group tag-text-input-group">
-                                                        <input type="text" class="form-control tag-text-input" ng-model="taskList.tagText"  size="30" placeholder="Новый тег">
-                                                        <span class="input-group-btn tag-buttons">
-                                                            <button class="btn btn-default add-tag-button" type="button" ng-click="taskList.addTag(task)">
-                                                                <div class="glyphicon glyphicon-plus"></div>
-                                                            </button>
-                                                            <button class="btn btn-default remove-tag-button" type="button" ng-show="taskList.deleteTags.length > 0" ng-click="taskList.removeTags(task)">
-                                                                <div class="glyphicon glyphicon-trash"></div>
-                                                            </button>
-                                                        </span>
-                                                    </div>
+                                                    <form ng-submit="taskList.addTag(task)">
+                                                        <div class="input-group tag-text-input-group">
+                                                            <input type="text" class="form-control tag-text-input" ng-model="taskList.tagText"  size="30" placeholder="Новый тег">
+                                                            <span class="input-group-btn tag-buttons">
+                                                                <button class="btn btn-default add-tag-button" type="submit">
+                                                                    <div class="glyphicon glyphicon-plus"></div>
+                                                                </button>
+                                                                <button class="btn btn-default remove-tag-button" type="button" ng-show="taskList.deleteTags.length > 0" ng-click="taskList.removeTags(task)">
+                                                                    <div class="glyphicon glyphicon-trash"></div>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>

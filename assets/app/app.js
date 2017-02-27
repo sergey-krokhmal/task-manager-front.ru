@@ -1,5 +1,5 @@
 var taskApp = angular.module('taskManagerApp', [])
-    .controller('TaskListController', ['$scope', '$http', 'orderByFilter', function($scope, $http, orderBy) {
+    .controller('TaskListController', ['$scope', '$http', '$filter', function($scope, $http, $filter) {
         var taskList = this;
         taskList.showTags = [];
         taskList.deleteTags = [];
@@ -12,10 +12,6 @@ var taskApp = angular.module('taskManagerApp', [])
                 'Content-Type': 'application/json'
             }
         }
-        
-        taskList.sortBy = function(task1, task2) {
-            return (task1.priority > task2.priority) ? -1 : 1;
-        };
         
         $http(req).then(function (response){
             taskList.tasks = response.data;
@@ -34,13 +30,18 @@ var taskApp = angular.module('taskManagerApp', [])
                 }
             }
             $http(req).then(function (response){
-                //console.log(response.data);
+                taskList.sortTasks();
             });
         }
         
         taskList.sortTasks = function() {
             taskList.showTags.fill(false);
-            taskList.tasks = orderBy(taskList.tasks, ['priority', '-status'], true);
+            var doneTasks = $filter('filter')(taskList.tasks, {status: 2});
+            var activeTasks = $filter('filter')(taskList.tasks, {status: 1});
+            var sortedActive = activeTasks.sort(function(task1,task2){
+                return (task1.priority > task2.priority) ? -1 : 1;
+            });
+            taskList.tasks = sortedActive.concat(doneTasks);
         }
         
         taskList.changePriority = function(task, priority) {
