@@ -36,9 +36,28 @@ body {
 .tasks-remain {
     font-size: 20px;
     height: 40px;
-    /* text-align: start; */
     line-height: 40px;
     margin-bottom: 4px;
+}
+
+.task-tools {
+    margin-bottom: 4px;
+}
+
+.task-tool {
+    padding: 0;
+    margin-right: 10px;
+    border-radius: 0;
+}
+
+.status-filter {
+    cursor: pointer;
+    border-radius: 0;
+}
+
+.priority-filter {
+    cursor: pointer;
+    border-radius: 0;
 }
 
 .task-item {

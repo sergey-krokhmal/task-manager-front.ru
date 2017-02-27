@@ -39,9 +39,22 @@
                             <span ng-show="taskList.remaining() == 0" class="text-success">Все задачи выполнены!</span>
                         </div>
                     </div>
+                    <div class="row task-tools">
+                        <div class="col-sm-3 task-tool">
+                            <select class="form-control status-filter" ng-model="taskList.statusFilterParam">
+                                <option value="">-Статус-</option>
+                                <option ng-repeat="aStatus in taskList.avaliableStatuses" ng-value="aStatus.key">{{aStatus.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3 task-tool">
+                            <select class="form-control priority-filter" ng-model="taskList.priorityFilterParam">
+                                <option value="">-Приоритет-</option>
+                                <option ng-repeat="aPriority in taskList.avaliablePriorities" ng-value="aPriority.key">{{aPriority.name}}</option>
+                            </select>
+                        </div>
+                    </div>
                     <ul class="row unstyled">
                         <li ng-repeat="(index, task) in taskList.tasks" class="col-sm-12 task-item">
-                            <!--input type="checkbox" ng-model="task.status" ng-false-value="1" ng-true-value="2"-->
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="row base-bg"  ng-class="{'done-task': (task.status == 2)}">
@@ -50,12 +63,10 @@
                                         </div>
                                         <a class="col-sm-9 task-part task-main-side" ng-click="taskList.toggleTags(index)">{{task.name}}</a>
                                         <div class="col-sm-2 task-part task-right-side">
-                                            <a ng-repeat="i in [] | range:1:3"
-                                            ng-class="(task.priority >= i) ? 'fill-star' : 'empty-star'"
+                                            <a ng-repeat="aPriority in taskList.avaliablePriorities"
+                                            ng-class="(task.priority >= aPriority.key) ? 'fill-star' : 'empty-star'"
                                             class="glyphicon glyphicon-star priority-star"
-                                            ng-click="taskList.changePriority(task, i)"></a>
-                                            <!--div class="glyphicon glyphicon-star-empty priority-star" ng-click="test(task, 2)"></div>
-                                            <div class="glyphicon glyphicon-star-empty priority-star" ng-click="test(task, 3)"></div-->
+                                            ng-click="taskList.changePriority(task, aPriority.key)"></a>
                                         </div>
                                     </div>
                                     <div class="row" ng-show="taskList.showTags[index]">

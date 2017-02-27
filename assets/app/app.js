@@ -1,6 +1,21 @@
 var taskApp = angular.module('taskManagerApp', [])
-    .controller('TaskListController', ['$scope', '$http', '$filter', function($scope, $http, $filter) {
+    .controller('TaskListController', ['$http', '$filter', function($http, $filter) {
         var taskList = this;
+        
+        taskList.avaliableStatuses = [
+            {key: 1, name: 'В работе'},
+            {key: 2, name: 'Завершена'}
+        ];
+        
+        taskList.avaliablePriorities = [
+            {key: 1, name: 'Низкий'},
+            {key: 2, name: 'Средний'},
+            {key: 3, name: 'Высокий'}
+        ];
+        
+        taskList.statusFilterParam = '';
+        taskList.priorityFilterParam = '';
+        
         taskList.showTags = [];
         taskList.deleteTags = [];
         taskList.tagDuplicate = false;
@@ -39,7 +54,7 @@ var taskApp = angular.module('taskManagerApp', [])
             var doneTasks = $filter('filter')(taskList.tasks, {status: 2});
             var activeTasks = $filter('filter')(taskList.tasks, {status: 1});
             var sortedActive = activeTasks.sort(function(task1,task2){
-                return (task1.priority > task2.priority) ? -1 : 1;
+                return (task1.priority < task2.priority) ? 1 : -1;
             });
             taskList.tasks = sortedActive.concat(doneTasks);
         }
@@ -60,12 +75,12 @@ var taskApp = angular.module('taskManagerApp', [])
         }
         
         taskList.addTask = function() {
-            var task_name = taskList.taskText;
-            var new_task = {name:task_name, status: "1", priority: "1", tags:[]};
+            var taskName = taskList.taskText;
+            var newTask = {name:taskName, status: "1", priority: "1", tags:[]};
             var req = {
                 method: 'POST',
                 url: 'http://api.task-manager.ru/Tasks/add',
-                data: JSON.stringify(new_task),
+                data: JSON.stringify(newTask),
                 headers: {
                     'Content-Type': 'application/json'
                 }
