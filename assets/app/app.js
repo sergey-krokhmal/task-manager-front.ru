@@ -13,8 +13,8 @@ var taskApp = angular.module('taskManagerApp', [])
             {key: 3, name: 'Высокий'}
         ];
         
-        taskList.statusFilterParam = '';
-        taskList.priorityFilterParam = '';
+        taskList.statusFilterParam = 0;
+        taskList.priorityFilterParam = 0;
         
         taskList.showTags = [];
         taskList.deleteTags = [];
@@ -30,7 +30,7 @@ var taskApp = angular.module('taskManagerApp', [])
         
         $http(req).then(function (response){
             taskList.tasks = response.data;
-            taskList.sortTasks();
+            taskList.filterSortTasks();
             taskList.showTags = new Array(taskList.tasks.length);
             taskList.showTags.fill(false);
         });
@@ -45,7 +45,7 @@ var taskApp = angular.module('taskManagerApp', [])
                 }
             }
             $http(req).then(function (response){
-                taskList.sortTasks();
+                taskList.filterSortTasks();
             });
         }
         
@@ -59,6 +59,32 @@ var taskApp = angular.module('taskManagerApp', [])
             taskList.tasks = sortedActive.concat(doneTasks);
         }
         
+        taskList.filterSortTasks = function() {
+            taskList.filterTasks().then(function() {
+                taskList.sortTasks();
+            });
+        }
+        
+        taskList.filterTasks = function() {
+            var req = {
+                method: 'POST',
+                url: 'http://api.task-manager.ru/Tasks/filter',
+                data: JSON.stringify({
+                    status: taskList.statusFilterParam,
+                    priority: taskList.priorityFilterParam
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        
+            return $http(req).then(function (response){
+                taskList.tasks = response.data;
+                taskList.showTags = new Array(taskList.tasks.length);
+                taskList.showTags.fill(false);
+            });
+        }
+        
         taskList.changePriority = function(task, priority) {
             task.priority = String(priority);
             var req = {
@@ -70,7 +96,7 @@ var taskApp = angular.module('taskManagerApp', [])
                 }
             }
             $http(req).then(function (response){
-                taskList.sortTasks();
+                taskList.filterSortTasks();
             });
         }
         
@@ -87,7 +113,7 @@ var taskApp = angular.module('taskManagerApp', [])
             }
             $http(req).then(function (response) {
                 taskList.tasks.push(response.data);
-                taskList.sortTasks();
+                taskList.filterSortTasks();
             });
             
             taskList.taskText = '';

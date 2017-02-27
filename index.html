@@ -36,19 +36,19 @@
                     <div class="row">
                         <div class="col-sm-12 bg-info tasks-remain">
                             <span ng-show="taskList.remaining() > 0">Осталось {{taskList.remaining()}} из {{taskList.tasks.length}}</span>
-                            <span ng-show="taskList.remaining() == 0" class="text-success">Все задачи выполнены!</span>
+                            <span ng-show="taskList.remaining() == 0" class="text-success">Нет задач!</span>
                         </div>
                     </div>
                     <div class="row task-tools">
                         <div class="col-sm-3 task-tool">
-                            <select class="form-control status-filter" ng-model="taskList.statusFilterParam">
-                                <option value="">-Статус-</option>
+                            <select class="form-control status-filter" ng-model="taskList.statusFilterParam" ng-change="taskList.filterSortTasks()">
+                                <option ng-value="0">-Статус-</option>
                                 <option ng-repeat="aStatus in taskList.avaliableStatuses" ng-value="aStatus.key">{{aStatus.name}}</option>
                             </select>
                         </div>
                         <div class="col-sm-3 task-tool">
-                            <select class="form-control priority-filter" ng-model="taskList.priorityFilterParam">
-                                <option value="">-Приоритет-</option>
+                            <select class="form-control priority-filter" ng-model="taskList.priorityFilterParam" ng-change="taskList.filterSortTasks()">
+                                <option ng-value="0">-Приоритет-</option>
                                 <option ng-repeat="aPriority in taskList.avaliablePriorities" ng-value="aPriority.key">{{aPriority.name}}</option>
                             </select>
                         </div>
