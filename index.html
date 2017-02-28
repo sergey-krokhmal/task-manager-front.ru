@@ -5,14 +5,14 @@
         <meta charset="utf-8"/>
         
         <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="/assets/lib/bootstrap/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css"/>
         <!--link rel="stylesheet" href="/assets/lib/bootstrap/css/bootstrap-theme.min.css"/-->
         
         <!-- CSS styles -->
-        <link rel="stylesheet" href="/assets/site.css"/>
+        <link rel="stylesheet" href="assets/site.css"/>
         
         <!-- Custom JS code -->
-        <script src="/assets/site.js"></script>
+        <script src="assets/site.js"></script>
         
         <!-- Angular libs-->
         <script src="assets/lib/angular/angular.min.js"></script>
@@ -34,7 +34,7 @@
             <div class="row row-margin-top">
                 <div class="col-sm-8 col-sm-offset-2" ng-controller="TaskListController as taskList">
                     <div class="row">
-                        <div class="col-sm-12 bg-info tasks-remain">
+                        <div class="col-sm-12 tasks-remain">
                             <span ng-show="taskList.remaining() > 0">Осталось {{taskList.remaining()}} из {{taskList.tasks.length}}</span>
                             <span ng-show="taskList.remaining() == 0" class="text-success">Нет задач!</span>
                         </div>
@@ -59,7 +59,11 @@
                                 <div class="col-sm-12">
                                     <div class="row base-bg"  ng-class="{'done-task': (task.status == 2)}">
                                         <div class="col-sm-1 task-part task-left-side">
-                                            <input class="task-status" type="checkbox" ng-model="task.status" ng-change="taskList.changeStatus(task)" ng-false-value="'1'" ng-true-value="'2'">
+                                            <label class="task-status">
+                                                <span class=" glyphicon" ng-class="{'glyphicon-ok': (task.status == 2)}">
+                                                    <input type="checkbox" ng-model="task.status" ng-change="taskList.changeStatus(task)" ng-false-value="'1'" ng-true-value="'2'">
+                                                </span>
+                                            </label>
                                         </div>
                                         <a class="col-sm-9 task-part task-main-side" ng-click="taskList.toggleTags(index)">{{task.name}}</a>
                                         <div class="col-sm-2 task-part task-right-side">
