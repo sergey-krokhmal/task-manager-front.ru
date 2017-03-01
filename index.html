@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Список задач</title>
+        <meta charset="utf-8"/>
+        
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="assets/lib/bootstrap/css/bootstrap.min.css"/>
+        <!--link rel="stylesheet" href="/assets/lib/bootstrap/css/bootstrap-theme.min.css"/-->
+        
+        <!-- CSS styles -->
+        <link rel="stylesheet" href="assets/site.css"/>
+        
+        <!-- Custom JS code -->
+        <script src="assets/site.js"></script>
+        
+        <!-- Angular libs-->
+        <script src="assets/lib/angular/angular.min.js"></script>
+        
+        <!-- Bootstrap JS code -->
+        <!--script src="/assets/lib/bootstrap/js/bootstrap.min.js"></script-->
+        <!--script src="/assets/lib/bootstrap/js/ui-bootstrap-custom-tpls-2.5.0.min.js"></script-->
+        
+        <!-- Angular custom JS -->
+        <script src="assets/app/app.js"></script>
+    </head>
+    <body ng-app="taskManagerApp">
+        <div class="container-fluid">
+            <div class="row base-bg">
+                <div class="col-sm-12 main-title">
+                    <h1>Список задач</h1>
+                </div>
+            </div>
+            <div class="row row-margin-top">
+                <div class="col-sm-8 col-sm-offset-2" ng-controller="TaskListController as taskList">
+                    <div class="row">
+                        <div class="col-sm-12 tasks-remain">
+                            <span ng-show="taskList.remaining() > 0">Осталось {{taskList.remaining()}} из {{taskList.tasks.length}}</span>
+                            <span ng-show="taskList.remaining() == 0" class="text-success">Нет задач!</span>
+                        </div>
+                    </div>
+                    <div class="row task-tools">
+                        <div class="col-sm-3 task-tool">
+                            <select class="form-control status-filter" ng-model="taskList.statusFilterParam" ng-change="taskList.filterSortTasks()">
+                                <option ng-value="0">-Статус-</option>
+                                <option ng-repeat="aStatus in taskList.avaliableStatuses" ng-value="aStatus.key">{{aStatus.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3 task-tool">
+                            <select class="form-control priority-filter" ng-model="taskList.priorityFilterParam" ng-change="taskList.filterSortTasks()">
+                                <option ng-value="0">-Приоритет-</option>
+                                <option ng-repeat="aPriority in taskList.avaliablePriorities" ng-value="aPriority.key">{{aPriority.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <ul class="row unstyled">
+                        <li ng-repeat="(index, task) in taskList.tasks" class="col-sm-12 task-item">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="row base-bg"  ng-class="{'done-task': (task.status == 2)}">
+                                        <div class="col-sm-1 task-part task-left-side">
+                                            <label class="task-status">
+                                                <span class=" glyphicon" ng-class="{'glyphicon-ok': (task.status == 2)}">
+                                                    <input type="checkbox" ng-model="task.status" ng-change="taskList.changeStatus(task)" ng-false-value="'1'" ng-true-value="'2'">
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <a class="col-sm-9 task-part task-main-side" ng-click="taskList.toggleTags(index)">{{task.name}}</a>
+                                        <div class="col-sm-2 task-part task-right-side">
+                                            <a ng-repeat="aPriority in taskList.avaliablePriorities"
+                                            ng-class="(task.priority >= aPriority.key) ? 'fill-star' : 'empty-star'"
+                                            class="glyphicon glyphicon-star priority-star"
+                                            ng-click="taskList.changePriority(task, aPriority.key)"></a>
+                                        </div>
+                                    </div>
+                                    <div class="row" ng-show="taskList.showTags[index]">
+                                        <div class="col-sm-12 tags-set inner-bg">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <a ng-repeat="tag in task.tags track by $index"
+                                                    class="task-tag"
+                                                    ng-class="{'active':(taskList.deleteTags.indexOf(tag) >= 0)}"
+                                                    ng-click="taskList.switchDeleteTag(tag)">
+                                                        {{tag}}
+                                                    </a>
+                                                    <span ng-show="!task.tags.length">Тегов нет</span>
+                                                </div>
+                                            </div>
+                                            <div class="row tags-row-danger">
+                                                <div class="col-sm-8 text-danger" ng-show="taskList.tagDuplicate">
+                                                    <span class="tags-row-danger-message">Такой тег уже присутствует</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-8">
+                                                    <form ng-submit="taskList.addTag(task)">
+                                                        <div class="input-group tag-text-input-group">
+                                                            <input type="text" class="form-control tag-text-input" ng-model="taskList.tagText"  size="30" placeholder="Новый тег">
+                                                            <span class="input-group-btn tag-buttons">
+                                                                <button class="btn btn-default add-tag-button" type="submit">
+                                                                    <div class="glyphicon glyphicon-plus"></div>
+                                                                </button>
+                                                                <button class="btn btn-default remove-tag-button" type="button" ng-show="taskList.deleteTags.length > 0" ng-click="taskList.removeTags(task)">
+                                                                    <div class="glyphicon glyphicon-trash"></div>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <form class="row" ng-submit="taskList.addTask()">
+                        <div class="input-group">
+                            <input type="text" class="form-control add-task-input" ng-model="taskList.taskText"  size="60" placeholder="Новая задача">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default add-tag-primary" type="submit" ng-click="taskList.addTag(task)">
+                                    <div class="glyphicon glyphicon-plus"></div>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
